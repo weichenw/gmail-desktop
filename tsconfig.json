@@ -1,7 +1,8 @@
 {
   "extends": "@sindresorhus/tsconfig",
-  "compilerOptions": {
-    "outDir": "dist-js",
+    "include": ["src/main/**/*"],
+    "compilerOptions": {
+    "outDir": "dist-main",
     "target": "esnext",
     "module": "commonjs",
     "lib": ["esnext", "dom", "dom.iterable"]
