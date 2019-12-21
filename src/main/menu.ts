@@ -1,10 +1,9 @@
 import { Menu, MenuItemConstructorOptions, dialog } from 'electron'
 import { appMenu } from 'electron-util'
-import { ipcMain as ipc } from 'electron-better-ipc'
 import config, { ConfigKey } from './config'
-import { getMainWindow } from './windows/main'
 import { removeAccount } from './helpers/account'
 import { createAddAccountWindow } from './windows/add-account'
+import { createEditAccountWindow } from './windows/edit-account'
 
 let menu: Menu
 
@@ -21,7 +20,7 @@ function generateAccountsMenuItems(): MenuItemConstructorOptions[] {
       {
         label: 'Edit',
         click: () => {
-          ipc.callRenderer(getMainWindow(), 'edit-account-dialog', id)
+          createEditAccountWindow(id)
         }
       },
       {

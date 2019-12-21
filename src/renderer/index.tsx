@@ -3,20 +3,29 @@ import * as ReactDOM from 'react-dom'
 import { ThemeProvider } from '@material-ui/core/styles'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import theme from './theme'
-import Main from './views/Main'
+import Default from './views/Default'
 import AddAccount from './views/AddAccount'
+import EditAccount from './views/EditAccount'
 import { Route } from '../constants'
+import { parse as parseQueryString } from 'query-string'
+
+const { useMemo } = React
 
 function Renderer() {
-  const hashRoute = window.location.hash
+  const view = useMemo(() => parseQueryString(location.search).view as Route, [
+    location.search
+  ])
 
-  const renderRoute = () => {
-    switch (hashRoute) {
+  const renderView = () => {
+    switch (view) {
       case Route.AddAccount: {
         return <AddAccount />
       }
+      case Route.EditAccount: {
+        return <EditAccount />
+      }
       default: {
-        return <Main />
+        return <Default />
       }
     }
   }
@@ -24,7 +33,7 @@ function Renderer() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      {renderRoute()}
+      {renderView()}
     </ThemeProvider>
   )
 }

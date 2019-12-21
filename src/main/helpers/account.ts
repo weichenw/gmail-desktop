@@ -1,6 +1,6 @@
 import * as shortid from 'shortid'
 import config, { ConfigKey } from '../config'
-import { Account } from '../../types'
+import { Account, Accounts } from '../../types'
 import {
   updateAccountViewBounds,
   createAccountView,
@@ -71,4 +71,12 @@ export function selectAccount(id: string): void {
 
   updateRendererAccounts()
   updateAccountViewBounds()
+}
+
+export function getAccount(id: string): Account {
+  return config.get(ConfigKey.Accounts).find(account => account.id === id)!
+}
+
+export function getAccounts(): Accounts {
+  return config.get(ConfigKey.Accounts)
 }

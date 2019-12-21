@@ -8,7 +8,7 @@ module.exports = {
   entry: './src/renderer/index.tsx',
   target: 'electron-renderer',
   output: {
-    path: path.resolve(__dirname, 'dist-renderer')
+    path: path.resolve(__dirname, 'dist-app')
   },
   resolve: {
     extensions: ['.js', '.ts', '.tsx'],

@@ -1,3 +1,4 @@
 export enum Route {
-  AddAccount = '#add-account'
+  AddAccount = '#add-account',
+  EditAccount = '#edit-account'
 }

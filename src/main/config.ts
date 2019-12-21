@@ -1,7 +1,7 @@
 import * as Store from 'electron-store'
 import { Account } from '../types'
 
-export const enum ConfigKey {
+export enum ConfigKey {
   Accounts = 'accounts',
   OverrideUserAgent = 'overrideUserAgent'
 }
