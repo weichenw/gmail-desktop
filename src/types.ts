@@ -1,6 +1,7 @@
 export interface Account {
-  viewId: string
+  id: string
   label: string
+  selected: boolean
 }
 
 export type Accounts = Account[]

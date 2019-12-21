@@ -1,31 +1,24 @@
-import * as path from 'path'
-import { app, BrowserWindow } from 'electron'
-import { is } from 'electron-util'
+import { app } from 'electron'
+import * as debug from 'electron-debug'
+import config, { ConfigKey } from './config'
+import { updateMenu } from './menu'
+import { createMainWindow } from './windows/main'
 
-let mainWindow: BrowserWindow
-
-function createMainWindow(): BrowserWindow {
-  const win = new BrowserWindow({
-    title: app.name
-  })
-
-  win.loadURL(
-    is.development
-      ? 'http://localhost:1234'
-      : path.resolve(__dirname, '..', 'dist-renderer', 'index.html')
-  )
-
-  return win
-}
-
+debug({
+  showDevTools: false,
+  isEnabled: true
+})
 ;(async () => {
   await app.whenReady()
 
-  mainWindow = createMainWindow()
+  // @TODO(timche): Temporary workaround
+  // https://github.com/timche/gmail-desktop#i-cant-sign-in-this-browser-or-app-may-not-be-secure
+  const overrideUserAgent = config.get(ConfigKey.OverrideUserAgent)
+  if (overrideUserAgent) {
+    app.userAgentFallback = overrideUserAgent
+  }
 
-  const { webContents } = mainWindow
+  createMainWindow()
 
-  webContents.on('dom-ready', () => {
-    mainWindow.show()
-  })
+  updateMenu()
 })()

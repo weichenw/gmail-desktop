@@ -1,6 +1,5 @@
 {
   "extends": "@sindresorhus/tsconfig",
-    "include": ["src/main/**/*"],
     "compilerOptions": {
     "outDir": "dist-main",
     "target": "esnext",
