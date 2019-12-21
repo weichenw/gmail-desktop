@@ -1,10 +1,10 @@
 import { BrowserView, session, Rectangle } from 'electron'
-import state from '../state'
-import config, { ConfigKey } from '../config'
+import state from './state'
+import config, { ConfigKey } from './config'
 import {
   getMainWindowContentSize,
   addMainWindowBrowserView
-} from '../windows/main'
+} from './windows/main'
 
 interface AccountViews {
   [accountId: string]: number

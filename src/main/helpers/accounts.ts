@@ -5,9 +5,8 @@ import {
   updateAccountViewBounds,
   createAccountView,
   destroyAccountView
-} from '../views/accounts'
+} from '../account-views'
 import { updateMenu } from '../menu'
-import { updateRendererAccounts } from './renderer'
 
 export function addAccount(label: string): void {
   const account = {
@@ -25,8 +24,6 @@ export function addAccount(label: string): void {
 
   config.set(ConfigKey.Accounts, accounts)
 
-  updateRendererAccounts()
-
   createAccountView(account.id)
 
   updateMenu()
@@ -43,8 +40,6 @@ export function removeAccount(id: string): void {
 
   config.set(ConfigKey.Accounts, accounts)
 
-  updateRendererAccounts()
-
   destroyAccountView(id)
 
   updateMenu()
@@ -57,8 +52,6 @@ export function editAccount(editedAccount: Account): void {
 
   config.set(ConfigKey.Accounts, accounts)
 
-  updateRendererAccounts()
-
   updateMenu()
 }
 
@@ -69,7 +62,6 @@ export function selectAccount(id: string): void {
 
   config.set(ConfigKey.Accounts, accounts)
 
-  updateRendererAccounts()
   updateAccountViewBounds()
 }
 

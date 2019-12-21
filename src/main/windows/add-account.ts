@@ -2,7 +2,7 @@ import { BrowserWindow, app } from 'electron'
 import { ipcMain as ipc } from 'electron-better-ipc'
 import { Route } from '../../constants'
 import { getRendererURL } from '../helpers/renderer'
-import { addAccount } from '../helpers/account'
+import { addAccount } from '../helpers/accounts'
 
 let addAccountWindow: BrowserWindow | null
 

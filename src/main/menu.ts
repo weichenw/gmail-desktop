@@ -1,7 +1,7 @@
 import { Menu, MenuItemConstructorOptions, dialog } from 'electron'
 import { appMenu } from 'electron-util'
 import config, { ConfigKey } from './config'
-import { removeAccount } from './helpers/account'
+import { removeAccount } from './helpers/accounts'
 import { createAddAccountWindow } from './windows/add-account'
 import { createEditAccountWindow } from './windows/edit-account'
 

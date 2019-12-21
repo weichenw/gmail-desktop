@@ -1,5 +1,7 @@
 import * as Store from 'electron-store'
+import { ipcMain as ipc } from 'electron-better-ipc'
 import { Account } from '../types'
+import { getMainWindow } from './windows/main'
 
 export enum ConfigKey {
   Accounts = 'accounts',
@@ -12,6 +14,10 @@ interface StoreType {
 }
 
 const config = new Store<StoreType>()
+
+config.onDidChange(ConfigKey.Accounts, accounts => {
+  ipc.callRenderer(getMainWindow(), 'update-accounts', accounts)
+})
 
 config.openInEditor()
 

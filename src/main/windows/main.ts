@@ -1,7 +1,7 @@
 import { BrowserWindow, BrowserView, app } from 'electron'
 import { ipcMain as ipc } from 'electron-better-ipc'
-import { selectAccount, getAccounts } from '../helpers/account'
-import { createAccountViews, updateAccountViewBounds } from '../views/accounts'
+import { selectAccount, getAccounts } from '../helpers/accounts'
+import { createAccountViews, updateAccountViewBounds } from '../account-views'
 import state from '../state'
 import { getRendererURL } from '../helpers/renderer'
 

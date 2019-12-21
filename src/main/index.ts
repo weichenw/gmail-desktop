@@ -5,7 +5,7 @@ import { updateMenu } from './menu'
 import { createMainWindow } from './windows/main'
 
 debug({
-  showDevTools: true,
+  showDevTools: false,
   isEnabled: true
 })
 ;(async () => {
