@@ -1,6 +1,7 @@
 {
   "extends": "@sindresorhus/tsconfig",
   "compilerOptions": {
+    "esModuleInterop": true,
     "noEmit": true,
     "lib": ["esnext", "dom", "dom.iterable"]
   }

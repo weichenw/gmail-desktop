@@ -16,7 +16,7 @@
     "start": "run-s start:renderer start:main",
     "start:main": "webpack --config webpack/main.dev.js -w & wait-on dist-js/main.js && electron .",
     "start:renderer": "webpack-dev-server --config webpack/renderer.dev.js & wait-on http://localhost:3000",
-    "build": "run-s build:*",
+    "build": "run-p build:*",
     "build:main": "webpack --config webpack/main.prod.js",
     "build:renderer": "webpack --config webpack/renderer.prod.js",
     "dist": "tsc && electron-builder --macos --linux --windows --publish never"
@@ -54,7 +54,10 @@
     "electron": "^7.1.2",
     "electron-builder": "^21.2.0",
     "eslint-config-prettier": "^6.3.0",
+    "eslint-config-xo-react": "^0.20.0",
     "eslint-config-xo-typescript": "^0.18.0",
+    "eslint-plugin-react": "^7.17.0",
+    "eslint-plugin-react-hooks": "^2.3.0",
     "html-webpack-plugin": "^3.2.0",
     "husky": "^3.0.5",
     "lint-staged": "^9.2.5",
@@ -105,7 +108,8 @@
   "xo": {
     "extends": [
       "xo-typescript",
-      "prettier/@typescript-eslint"
+      "prettier/@typescript-eslint",
+      "xo-react"
     ],
     "extensions": [
       "ts",
@@ -115,7 +119,15 @@
       "node",
       "browser"
     ],
-    "prettier": true
+    "prettier": true,
+    "overrides": [
+      {
+        "files": "webpack/*.js",
+        "rules": {
+          "@typescript-eslint/no-var-requires": 0
+        }
+      }
+    ]
   },
   "stylelint": {
     "extends": "stylelint-config-xo",

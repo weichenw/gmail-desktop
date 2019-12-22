@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React, { useState, useMemo } from 'react'
 import { ipcRenderer as ipc } from 'electron-better-ipc'
 import Dialog from '@material-ui/core/Dialog'
 import DialogTitle from '@material-ui/core/DialogTitle'
@@ -9,14 +9,12 @@ import Button from '@material-ui/core/Button'
 import { parse as parseQueryString } from 'query-string'
 import { Account } from '../../types'
 
-const { useState, useMemo } = React
-
-export default () => {
+const EditAccount: React.FC = () => {
   const account = useMemo(
     () =>
       JSON.parse(parseQueryString(location.search)
         .account as string) as Account,
-    [location.search]
+    []
   )
 
   const [label, setLabel] = useState<string>(account.label)
@@ -26,20 +24,22 @@ export default () => {
       <DialogTitle>Edit Account</DialogTitle>
       <DialogContent>
         <TextField
+          autoFocus
+          fullWidth
           label="Label"
           type="text"
           value={label}
           onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
             setLabel(event.target.value)
           }
-          autoFocus
-          fullWidth
         />
       </DialogContent>
       <DialogActions>
         <Button onClick={window.close}>Cancel</Button>
         <Button
-          onClick={() => ipc.callMain('edit-account', { ...account, label })}
+          onClick={() => {
+            ipc.callMain('edit-account', { ...account, label })
+          }}
         >
           Save
         </Button>
@@ -47,3 +47,5 @@ export default () => {
     </Dialog>
   )
 }
+
+export default EditAccount
