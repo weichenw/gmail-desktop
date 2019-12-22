@@ -1,9 +1,18 @@
+const enum StateKey {
+  AppBarHeight = 'appBarHeight',
+  UnreadCounts = 'unreadCounts'
+}
+
 interface State {
-  appBarHeight: number
+  [StateKey.AppBarHeight]: number
+  [StateKey.UnreadCounts]: {
+    [accountId: string]: number
+  }
 }
 
 const state: State = {
-  appBarHeight: 0
+  [StateKey.AppBarHeight]: 0,
+  [StateKey.UnreadCounts]: {}
 }
 
 export default state

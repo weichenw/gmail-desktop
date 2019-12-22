@@ -22,7 +22,6 @@
     "dist": "tsc && electron-builder --macos --linux --windows --publish never"
   },
   "dependencies": {
-    "@types/shortid": "^0.0.29",
     "electron-better-ipc": "^0.7.0",
     "electron-context-menu": "^0.15.0",
     "electron-debug": "^3.0.1",
@@ -44,6 +43,7 @@
     "@types/react": "^16.9.16",
     "@types/react-dom": "^16.9.4",
     "@types/semver": "^6.0.2",
+    "@types/shortid": "^0.0.29",
     "@typescript-eslint/eslint-plugin": "^2.2.0",
     "@typescript-eslint/parser": "^2.2.0",
     "babel-loader": "^8.0.6",
