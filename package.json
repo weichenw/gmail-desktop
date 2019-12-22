@@ -84,13 +84,9 @@
     }
   },
   "lint-staged": {
-    "*.{ts,tsx}": [
+    "*.{js,ts,tsx}": [
       "prettier --write",
       "xo --fix",
-      "git add"
-    ],
-    "*.js": [
-      "prettier --write",
       "git add"
     ],
     "*.css": [
