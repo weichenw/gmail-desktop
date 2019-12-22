@@ -7,18 +7,18 @@
   "repository": "timche/gmail-desktop",
   "author": "Tim Cheung <tim@cheung.io>",
   "license": "MIT",
-  "main": "dist-js/main/index.js",
+  "main": "dist-js/main.js",
   "scripts": {
     "postinstall": "electron-builder install-app-deps",
-    "prettier": "prettier --write",
-    "prettify": "yarn prettier -- 'src/**/*.ts'",
     "lint": "run-p lint:*",
     "lint:ts": "xo",
     "lint:css": "stylelint 'css/*.css'",
-    "start": "run-p start:*",
-    "start:renderer": "webpack-dev-server",
-    "start:main": "tsc --project tsconfig.main.json && wait-for-localhost 8080 && electron .",
-    "pack": "tsc && electron-builder --dir",
+    "start": "run-s start:renderer start:main",
+    "start:main": "webpack --config webpack/main.dev.js -w & wait-on dist-js/main.js && electron .",
+    "start:renderer": "webpack-dev-server --config webpack/renderer.dev.js & wait-on http://localhost:3000",
+    "build": "run-s build:*",
+    "build:main": "webpack --config webpack/main.prod.js",
+    "build:renderer": "webpack --config webpack/renderer.prod.js",
     "dist": "tsc && electron-builder --macos --linux --windows --publish never"
   },
   "dependencies": {
@@ -36,6 +36,9 @@
     "shortid": "^2.2.15"
   },
   "devDependencies": {
+    "@babel/preset-env": "^7.7.7",
+    "@babel/preset-react": "^7.7.4",
+    "@babel/preset-typescript": "^7.7.7",
     "@material-ui/core": "^4.8.0",
     "@material-ui/icons": "^4.5.1",
     "@sindresorhus/tsconfig": "^0.4.0",
@@ -65,10 +68,11 @@
     "stylelint-config-xo": "^0.15.0",
     "typeface-roboto": "^0.0.75",
     "typescript": "~3.6.3",
-    "wait-for-localhost-cli": "^1.1.0",
+    "wait-on": "^3.3.0",
     "webpack": "^4.41.4",
     "webpack-cli": "^3.3.10",
     "webpack-dev-server": "^3.10.1",
+    "webpack-merge": "^4.2.2",
     "xo": "^0.24.0"
   },
   "husky": {
@@ -80,6 +84,10 @@
     "*.{ts,tsx}": [
       "prettier --write",
       "xo --fix",
+      "git add"
+    ],
+    "*.js": [
+      "prettier --write",
       "git add"
     ],
     "*.css": [
@@ -100,7 +108,8 @@
       "prettier/@typescript-eslint"
     ],
     "extensions": [
-      "ts"
+      "ts",
+      "tsx"
     ],
     "envs": [
       "node",

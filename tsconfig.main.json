@@ -1,7 +1,0 @@
-{
-  "extends": "./tsconfig",
-  "include": ["src/main/**/*"],
-  "compilerOptions": {
-    "outDir": "dist-js"
-  }
-}

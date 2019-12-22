@@ -1,4 +1,4 @@
-const enum StateKey {
+export enum StateKey {
   AppBarHeight = 'appBarHeight',
   UnreadCounts = 'unreadCounts'
 }
