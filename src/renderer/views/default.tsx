@@ -19,7 +19,7 @@ const Default: React.FC = () => {
   const appBarElement = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    ipc.callMain('ready', appBarElement.current.clientHeight)
+    ipc.callMain('ready', appBarElement.current!.clientHeight)
 
     ipc.answerMain('update-accounts', accounts => {
       setAccounts(accounts as Accounts)

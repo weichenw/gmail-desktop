@@ -1,8 +1,9 @@
 import { app } from 'electron'
-import * as debug from 'electron-debug'
 import config, { ConfigKey } from './config'
 import { updateMenu } from './menu'
 import { createMainWindow } from './windows/main'
+
+import debug = require('electron-debug')
 
 debug({
   showDevTools: false,

@@ -1,6 +1,7 @@
-import * as path from 'path'
 import { is } from 'electron-util'
-import * as queryString from 'query-string'
+
+import path = require('path')
+import queryString = require('query-string')
 
 const URL = is.development
   ? 'http://localhost:8080'

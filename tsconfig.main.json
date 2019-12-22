@@ -1,0 +1,13 @@
+{
+  "extends": "./tsconfig.json",
+  "include": [
+    "src/main/index.ts"
+  ],
+  "compilerOptions": {
+    "outDir": "dist-js",
+    "target": "es2018",
+    "esModuleInterop": false,
+    "declaration": false,
+    "sourceMap": false
+  }
+}

@@ -5,7 +5,7 @@ const base = require('./renderer.base')
 module.exports = merge(base, {
   mode: 'production',
   output: {
-    path: path.resolve(__dirname, '..', 'dist-js'),
+    path: path.resolve(__dirname, '..', 'dist-js', 'renderer'),
     filename: 'index.js'
   }
 })

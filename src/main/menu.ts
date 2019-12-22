@@ -59,6 +59,9 @@ export function updateMenu(): void {
           }
         }
       ]
+    },
+    {
+      role: 'editMenu'
     }
   ]
 

@@ -1,7 +1,8 @@
-import * as Store from 'electron-store'
 import { ipcMain as ipc } from 'electron-better-ipc'
 import { Account } from '../types'
 import { getMainWindow } from './windows/main'
+
+import Store = require('electron-store')
 
 export enum ConfigKey {
   Accounts = 'accounts',

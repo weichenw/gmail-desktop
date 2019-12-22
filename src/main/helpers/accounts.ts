@@ -1,4 +1,3 @@
-import * as shortid from 'shortid'
 import config, { ConfigKey } from '../config'
 import { Account, Accounts } from '../../types'
 import {
@@ -7,6 +6,8 @@ import {
   destroyAccountView
 } from '../account-views'
 import { updateMenu } from '../menu'
+
+import shortid = require('shortid')
 
 export function addAccount(label: string): void {
   const account = {
