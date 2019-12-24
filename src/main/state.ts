@@ -16,7 +16,15 @@ const state: State = {
 }
 
 export function setUnreadCount(accountId: string, count: number): void {
-  state[StateKey.UnreadCounts][accountId] = count
+  const accountUnreadCount = state[StateKey.UnreadCounts][accountId]
+
+  if (accountUnreadCount !== count) {
+    state[StateKey.UnreadCounts][accountId] = count
+  }
+}
+
+export function getUnreadCount(accountId: string): number {
+  return state[StateKey.UnreadCounts][accountId]
 }
 
 export function getTotalUnreadCount(): number {

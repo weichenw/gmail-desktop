@@ -8,11 +8,7 @@ import {
 
 import path = require('path')
 
-interface AccountViews {
-  [accountId: string]: number
-}
-
-const accountViews: AccountViews = {}
+const accountViews: Record<string, number> = {}
 
 export function getAccountView(accountId: string): BrowserView {
   return BrowserView.fromId(accountViews[accountId])
@@ -58,7 +54,7 @@ export function createAccountView(
   const accountView = new BrowserView({
     webPreferences: {
       session: session.fromPartition(`persist:${accountId}`),
-      preload: path.resolve(__dirname, 'preload.js')
+      preload: path.resolve(__dirname, 'preload')
     }
   })
 
@@ -73,9 +69,11 @@ export function createAccountView(
 
   const { webContents } = accountView
 
-  webContents.loadURL('https://mail.google.com/')
+  webContents.executeJavaScript(
+    `localStorage.setItem('_accountId', '${accountId}')`
+  )
 
-  accountView.webContents.send('update-unread-count')
+  webContents.loadURL('https://mail.google.com/')
 
   accountViews[accountId] = accountView.id
 }

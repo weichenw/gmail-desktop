@@ -1,8 +1,9 @@
 import { BrowserWindow, BrowserView, app } from 'electron'
 import { ipcMain as ipc } from 'electron-better-ipc'
+import { is } from 'electron-util'
 import { selectAccount } from '../helpers/accounts'
 import { createAccountViews, updateAccountViewBounds } from '../account-views'
-import state from '../state'
+import state, { setUnreadCount, getTotalUnreadCount } from '../state'
 import { getRendererURL, updateRendererAccounts } from '../helpers/renderer'
 import config, { ConfigKey } from '../config'
 
@@ -36,6 +37,20 @@ export function createMainWindow(): void {
 
   ipc.answerRenderer('select-account', id => {
     selectAccount(id as string)
+  })
+
+  ipc.answerRenderer('update-unread-count', data => {
+    const { accountId, unreadCount } = data as {
+      accountId: string
+      unreadCount: number
+    }
+    setUnreadCount(accountId, unreadCount)
+
+    const totalUnreadCount = getTotalUnreadCount()
+
+    if (is.macos) {
+      app.dock.setBadge(totalUnreadCount ? totalUnreadCount.toString() : '')
+    }
   })
 
   mainWindow.on('resize', updateAccountViewBounds)
