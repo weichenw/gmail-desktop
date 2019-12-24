@@ -33,6 +33,7 @@ const EditAccount: React.FC = () => {
         <Button
           onClick={() => {
             ipc.callMain('edit-account', { ...account, label })
+            window.close()
           }}
         >
           Save

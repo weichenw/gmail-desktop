@@ -3,7 +3,7 @@ import log from 'electron-log'
 import { autoUpdater } from 'electron-updater'
 import { is } from 'electron-util'
 
-import config, { ConfigKey } from './config'
+import config, { ConfigKey } from '../config'
 import { viewLogs } from './logs'
 import { createNotification } from './notifications'
 
@@ -23,7 +23,7 @@ function onUpdateAvailable(): void {
   )
 }
 
-export function init(): void {
+export default function initAutoUpdates(): void {
   if (!is.development) {
     log.transports.file.level = 'info'
     autoUpdater.logger = log

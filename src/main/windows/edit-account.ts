@@ -1,9 +1,7 @@
 import { BrowserWindow, app } from 'electron'
-import { ipcMain as ipc } from 'electron-better-ipc'
 import { Route } from '../../constants'
 import { getRendererURL } from '../helpers/renderer'
-import { editAccount, getAccount } from '../helpers/accounts'
-import { Account } from '../../types'
+import { getAccount } from '../helpers/accounts'
 
 let editAccountWindow: BrowserWindow | null
 
@@ -22,18 +20,7 @@ export function createEditAccountWindow(accountId: string): void {
 
   editAccountWindow.loadURL(getRendererURL(Route.EditAccount, { account }))
 
-  const removeEditAccountListener = ipc.answerRenderer(
-    'edit-account',
-    account => {
-      editAccount(account as Account)
-      if (editAccountWindow) {
-        editAccountWindow.close()
-      }
-    }
-  )
-
   editAccountWindow.on('close', () => {
     editAccountWindow = null
-    removeEditAccountListener()
   })
 }

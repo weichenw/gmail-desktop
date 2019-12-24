@@ -25,7 +25,7 @@ function onDownloadComplete(filename: string, state: State): void {
   )
 }
 
-export function init(): void {
+export default function handleDownloads(): void {
   electronDl({
     showBadge: false,
     onStarted: item => {

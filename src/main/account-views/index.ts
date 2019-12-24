@@ -55,7 +55,8 @@ export function createAccountView(
     webPreferences: {
       session: session.fromPartition(`persist:${accountId}`),
       preload: path.resolve(__dirname, 'preload'),
-      nativeWindowOpen: true
+      nativeWindowOpen: true,
+      nodeIntegration: true
     }
   })
 
@@ -64,7 +65,7 @@ export function createAccountView(
   if (typeof show === 'boolean') {
     const { visible, hidden } = getAccountViewBounds()
     accountView.setBounds(show ? visible : hidden)
-  } else {
+  } else if (typeof show === 'object') {
     accountView.setBounds(show)
   }
 
@@ -150,6 +151,6 @@ export function updateAccountViewBounds(): void {
 
 export function destroyAccountView(accountId: string): void {
   getAccountView(accountId).destroy()
-  delete accountViews[accountId]
+  delete accountViews[accountId] // eslint-disable-line @typescript-eslint/no-dynamic-delete
   updateAccountViewBounds()
 }

@@ -6,6 +6,7 @@ import {
   destroyAccountView
 } from '../account-views'
 import { updateMenu } from '../menu'
+import { getMainWindow } from '../windows/main'
 
 import shortid = require('shortid')
 
@@ -25,7 +26,9 @@ export function addAccount(label: string): void {
 
   config.set(ConfigKey.Accounts, accounts)
 
-  createAccountView(account.id)
+  if (getMainWindow()) {
+    createAccountView(account.id)
+  }
 
   updateMenu()
 }
@@ -72,4 +75,8 @@ export function getAccount(id: string): Account {
 
 export function getAccounts(): Accounts {
   return config.get(ConfigKey.Accounts)
+}
+
+export function hasMultiAccounts(): boolean {
+  return getAccounts().length > 1
 }

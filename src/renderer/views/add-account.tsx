@@ -28,6 +28,7 @@ const AddAccount: React.FC = () => {
         <Button
           onClick={() => {
             ipc.callMain('add-account', label)
+            window.close()
           }}
         >
           Add

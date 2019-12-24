@@ -34,7 +34,10 @@ const Main: React.FC = () => {
       <Tabs
         variant="fullWidth"
         value={accounts.findIndex(account => account.selected)}
-        onChange={(_event: React.ChangeEvent<{}>, value: any) => {
+        onChange={(
+          _event: React.ChangeEvent<Record<string, unknown>>,
+          value: any
+        ) => {
           const { id, selected } = accounts[value as number]
           if (!selected) {
             ipc.callMain('select-account', id)

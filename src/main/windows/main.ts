@@ -1,15 +1,9 @@
 import { BrowserWindow, BrowserView, app } from 'electron'
 import { ipcMain as ipc } from 'electron-better-ipc'
-import { is } from 'electron-util'
 import { selectAccount } from '../helpers/accounts'
 import { createAccountViews, updateAccountViewBounds } from '../account-views'
-import state, { setUnreadCount, getTotalUnreadCount } from '../state'
-import {
-  getRendererURL,
-  updateRendererAccounts,
-  updateRendererUnreadCounts
-} from '../helpers/renderer'
-import config, { ConfigKey } from '../config'
+import state from '../state'
+import { getRendererURL, updateRendererAccounts } from '../helpers/renderer'
 
 let mainWindow: BrowserWindow
 let rendererReady = false
@@ -43,32 +37,13 @@ export function createMainWindow(): void {
     selectAccount(id as string)
   })
 
-  ipc.answerRenderer('update-unread-count', data => {
-    const { accountId, unreadCount } = data as {
-      accountId: string
-      unreadCount: number
-    }
-
-    setUnreadCount(accountId, unreadCount)
-
-    const totalUnreadCount = getTotalUnreadCount()
-
-    if (is.macos) {
-      app.dock.setBadge(totalUnreadCount ? totalUnreadCount.toString() : '')
-    }
-
-    updateRendererUnreadCounts()
-  })
-
   mainWindow.on('resize', updateAccountViewBounds)
-
-  config.onDidChange(ConfigKey.Accounts, updateRendererAccounts)
 }
 
 export function getMainWindowContentSize(): number[] {
-  return mainWindow.getContentSize()
+  return getMainWindow().getContentSize()
 }
 
 export function addMainWindowBrowserView(browserView: BrowserView): void {
-  mainWindow.addBrowserView(browserView)
+  getMainWindow().addBrowserView(browserView)
 }
