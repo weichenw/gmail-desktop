@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { Account } from '../types'
+import { Account } from '../../types'
 
 export function useParamsAccount(): Account {
   return useMemo(
