@@ -1,4 +1,4 @@
-import { BrowserView, session, Rectangle } from 'electron'
+import { BrowserView, session, Rectangle, BrowserWindow, shell } from 'electron'
 import state from '../state'
 import config, { ConfigKey } from '../config'
 import {
@@ -54,7 +54,8 @@ export function createAccountView(
   const accountView = new BrowserView({
     webPreferences: {
       session: session.fromPartition(`persist:${accountId}`),
-      preload: path.resolve(__dirname, 'preload')
+      preload: path.resolve(__dirname, 'preload'),
+      nativeWindowOpen: true
     }
   })
 
@@ -76,6 +77,53 @@ export function createAccountView(
   webContents.loadURL('https://mail.google.com/')
 
   accountViews[accountId] = accountView.id
+
+  webContents.on(
+    'new-window',
+    (event, url, _frameName, _disposition, options) => {
+      event.preventDefault()
+
+      // Block `Add Account`
+      if (url.startsWith('https://accounts.google.com')) {
+        return
+      }
+
+      if (url.startsWith('https://mail.google.com')) {
+        const win = new BrowserWindow({
+          ...options,
+          titleBarStyle: 'default',
+          x: undefined,
+          y: undefined
+        })
+
+        win.webContents.on('new-window', (event: Event, url: string) => {
+          event.preventDefault()
+          shell.openExternal(url)
+        })
+
+        // @ts-ignore
+        event.newGuest = win
+
+        return
+      }
+
+      if (url.startsWith('about:blank')) {
+        const win = new BrowserWindow({ ...options, show: false })
+
+        win.webContents.once('will-redirect', (_event, url) => {
+          shell.openExternal(url)
+          win.destroy()
+        })
+
+        // @ts-ignore
+        event.newGuest = win
+
+        return
+      }
+
+      shell.openExternal(url)
+    }
+  )
 }
 
 export function createAccountViews(): void {
