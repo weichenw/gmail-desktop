@@ -3,18 +3,24 @@ import { ipcRenderer as ipc } from 'electron-better-ipc'
 import AppBar from '@material-ui/core/AppBar'
 import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
-import { Accounts } from '../../types'
+import Chip from '@material-ui/core/Chip'
+import { Accounts, UnreadCounts } from '../../types'
 
 const Main: React.FC = () => {
   const [accounts, setAccounts] = useState<Accounts>([])
+  const [unreadCounts, setUnreadCounts] = useState<UnreadCounts>({})
 
   const appBarElement = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     ipc.callMain('ready', appBarElement.current!.clientHeight)
 
-    ipc.answerMain('update-accounts', accounts => {
-      setAccounts(accounts as Accounts)
+    ipc.answerMain('update-accounts', _accounts => {
+      setAccounts(_accounts as Accounts)
+    })
+
+    ipc.answerMain('update-unread-counts', _unreadCounts => {
+      setUnreadCounts(_unreadCounts as UnreadCounts)
     })
   }, [])
 
@@ -35,9 +41,18 @@ const Main: React.FC = () => {
           }
         }}
       >
-        {accounts.map(({ id, label }) => (
-          <Tab key={id} label={label} />
-        ))}
+        {accounts.map(({ id, label }) => {
+          const content = (
+            <div style={{ display: 'flex' }}>
+              <span style={{ marginRight: 4 }}>{label}</span>
+              {Boolean(unreadCounts[id]) && (
+                <Chip label={unreadCounts[id]} size="small" color="secondary" />
+              )}
+            </div>
+          )
+
+          return <Tab key={id} label={content} />
+        })}
       </Tabs>
     </AppBar>
   )

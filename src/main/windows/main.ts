@@ -4,7 +4,11 @@ import { is } from 'electron-util'
 import { selectAccount } from '../helpers/accounts'
 import { createAccountViews, updateAccountViewBounds } from '../account-views'
 import state, { setUnreadCount, getTotalUnreadCount } from '../state'
-import { getRendererURL, updateRendererAccounts } from '../helpers/renderer'
+import {
+  getRendererURL,
+  updateRendererAccounts,
+  updateRendererUnreadCounts
+} from '../helpers/renderer'
 import config, { ConfigKey } from '../config'
 
 let mainWindow: BrowserWindow
@@ -44,6 +48,7 @@ export function createMainWindow(): void {
       accountId: string
       unreadCount: number
     }
+
     setUnreadCount(accountId, unreadCount)
 
     const totalUnreadCount = getTotalUnreadCount()
@@ -51,6 +56,8 @@ export function createMainWindow(): void {
     if (is.macos) {
       app.dock.setBadge(totalUnreadCount ? totalUnreadCount.toString() : '')
     }
+
+    updateRendererUnreadCounts()
   })
 
   mainWindow.on('resize', updateAccountViewBounds)

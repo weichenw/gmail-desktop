@@ -3,6 +3,7 @@ import { ipcMain as ipc } from 'electron-better-ipc'
 import { Route } from '../../constants'
 import { getMainWindow } from '../windows/main'
 import config, { ConfigKey } from '../config'
+import state from '../state'
 
 import queryString = require('querystring')
 import path = require('path')
@@ -42,4 +43,8 @@ export function updateRendererAccounts(): void {
     'update-accounts',
     config.get(ConfigKey.Accounts)
   )
+}
+
+export function updateRendererUnreadCounts(): void {
+  ipc.callRenderer(getMainWindow(), 'update-unread-counts', state.unreadCounts)
 }

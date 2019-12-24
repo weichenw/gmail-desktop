@@ -1,3 +1,5 @@
+import { UnreadCounts } from '../types'
+
 export enum StateKey {
   AppBarHeight = 'appBarHeight',
   UnreadCounts = 'unreadCounts'
@@ -5,9 +7,7 @@ export enum StateKey {
 
 interface State {
   [StateKey.AppBarHeight]: number
-  [StateKey.UnreadCounts]: {
-    [accountId: string]: number
-  }
+  [StateKey.UnreadCounts]: UnreadCounts
 }
 
 const state: State = {

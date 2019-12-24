@@ -5,3 +5,7 @@ export interface Account {
 }
 
 export type Accounts = Account[]
+
+export interface UnreadCounts {
+  [accountId: string]: number
+}

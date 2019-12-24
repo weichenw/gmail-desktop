@@ -1,7 +1,9 @@
 import { ipcRenderer as ipc } from 'electron-better-ipc'
 
+const UPDATE_UNREAD_COUNT_INVERVAL = 1000
+
 let lastUnreadCount = 0
-let accountId: string | null = null
+let accountId: string
 
 function getUnreadCount(): number {
   const inboxUnreadCountElement = document.querySelector<HTMLDivElement>(
@@ -24,12 +26,7 @@ function updateUnreadCount(): void {
   }
 }
 
-window.addEventListener('load', () => {
-  while (!accountId) {
-    accountId = localStorage.getItem('_accountId')
-  }
-
-  updateUnreadCount()
-
-  setInterval(updateUnreadCount, 500)
+document.addEventListener('DOMContentLoaded', () => {
+  accountId = localStorage.getItem('_accountId')!
+  setInterval(updateUnreadCount, UPDATE_UNREAD_COUNT_INVERVAL)
 })
