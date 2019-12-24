@@ -1,5 +1,6 @@
-import Store from 'electron-store'
 import { Account } from '../types'
+
+import Store = require('electron-store')
 
 export enum ConfigKey {
   Accounts = 'accounts',
