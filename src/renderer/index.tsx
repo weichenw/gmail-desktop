@@ -4,7 +4,7 @@ import { ThemeProvider } from '@material-ui/core/styles'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import { Route } from '../constants'
 import theme from './theme'
-import Default from './views/default'
+import Main from './views/main'
 import AddAccount from './views/add-account'
 import EditAccount from './views/edit-account'
 
@@ -19,7 +19,7 @@ const View: React.FC = () => {
     }
 
     default: {
-      return <Default />
+      return <Main />
     }
   }
 }

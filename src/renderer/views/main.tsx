@@ -5,7 +5,7 @@ import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
 import { Accounts } from '../../types'
 
-const Default: React.FC = () => {
+const Main: React.FC = () => {
   const [accounts, setAccounts] = useState<Accounts>([])
 
   const appBarElement = useRef<HTMLDivElement>(null)
@@ -43,4 +43,4 @@ const Default: React.FC = () => {
   )
 }
 
-export default Default
+export default Main
