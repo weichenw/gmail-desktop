@@ -1,27 +1,45 @@
 import { is } from 'electron-util'
+import { ipcMain as ipc } from 'electron-better-ipc'
+import { Route } from '../../constants'
+import { getMainWindow } from '../windows/main'
+import config, { ConfigKey } from '../config'
 
+import queryString = require('querystring')
 import path = require('path')
-import queryString = require('query-string')
 
 const URL = is.development
   ? 'http://localhost:8080'
   : path.resolve(__dirname, '..', 'dist-renderer', 'index.html')
 
 export function getRendererURL(
-  view = '',
-  queryParams: Record<string, any> = {}
+  view?: Route,
+  params?: Record<string, any>
 ): string {
   let url = URL
 
-  const normalizedQueryParams = Object.entries(queryParams).reduce(
-    (acc, [param, value]) => ({
-      ...acc,
-      [param]: JSON.stringify(value)
-    }),
-    { view }
-  )
+  if (params) {
+    url += `?${queryString.stringify(
+      Object.entries(params).reduce(
+        (acc, [key, value]) => ({
+          ...acc,
+          [key]: JSON.stringify(value)
+        }),
+        {} as Record<string, string>
+      )
+    )}`
+  }
 
-  url += `?${queryString.stringify(normalizedQueryParams)}`
+  if (view) {
+    url += view
+  }
 
   return url
+}
+
+export function updateRendererAccounts(): void {
+  ipc.callRenderer(
+    getMainWindow(),
+    'update-accounts',
+    config.get(ConfigKey.Accounts)
+  )
 }

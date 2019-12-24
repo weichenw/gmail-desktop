@@ -1,20 +1,12 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { ipcRenderer as ipc } from 'electron-better-ipc'
 import AppBar from '@material-ui/core/AppBar'
 import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
-import { parse as parseQueryString } from 'query-string'
 import { Accounts } from '../../types'
 
 const Default: React.FC = () => {
-  const initialAccounts = useMemo(
-    () =>
-      JSON.parse(parseQueryString(location.search)
-        .initialAccounts as string) as Accounts,
-    []
-  )
-
-  const [accounts, setAccounts] = useState<Accounts>(initialAccounts)
+  const [accounts, setAccounts] = useState<Accounts>([])
 
   const appBarElement = useRef<HTMLDivElement>(null)
 

@@ -1,10 +1,12 @@
 import { BrowserView, session, Rectangle } from 'electron'
-import state from './state'
-import config, { ConfigKey } from './config'
+import state from '../state'
+import config, { ConfigKey } from '../config'
 import {
   getMainWindowContentSize,
   addMainWindowBrowserView
-} from './windows/main'
+} from '../windows/main'
+
+import path = require('path')
 
 interface AccountViews {
   [accountId: string]: number
@@ -55,7 +57,8 @@ export function createAccountView(
 ): void {
   const accountView = new BrowserView({
     webPreferences: {
-      session: session.fromPartition(`persist:${accountId}`)
+      session: session.fromPartition(`persist:${accountId}`),
+      preload: path.resolve(__dirname, 'preload.js')
     }
   })
 
@@ -68,7 +71,11 @@ export function createAccountView(
     accountView.setBounds(show)
   }
 
-  accountView.webContents.loadURL('https://mail.google.com/')
+  const { webContents } = accountView
+
+  webContents.loadURL('https://mail.google.com/')
+
+  accountView.webContents.send('update-unread-count')
 
   accountViews[accountId] = accountView.id
 }

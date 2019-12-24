@@ -1,9 +1,10 @@
 import { BrowserWindow, BrowserView, app } from 'electron'
 import { ipcMain as ipc } from 'electron-better-ipc'
-import { selectAccount, getAccounts } from '../helpers/accounts'
+import { selectAccount } from '../helpers/accounts'
 import { createAccountViews, updateAccountViewBounds } from '../account-views'
 import state from '../state'
-import { getRendererURL } from '../helpers/renderer'
+import { getRendererURL, updateRendererAccounts } from '../helpers/renderer'
+import config, { ConfigKey } from '../config'
 
 let mainWindow: BrowserWindow
 let rendererReady = false
@@ -21,16 +22,13 @@ export function createMainWindow(): void {
     }
   })
 
-  mainWindow.loadURL(
-    getRendererURL(undefined, { initialAccounts: getAccounts() })
-  )
-
-  mainWindow.on('resize', updateAccountViewBounds)
+  mainWindow.loadURL(getRendererURL())
 
   ipc.answerRenderer('ready', appBarHeight => {
     if (!rendererReady) {
       rendererReady = true
       state.appBarHeight = appBarHeight as number
+      updateRendererAccounts()
       createAccountViews()
       mainWindow.show()
     }
@@ -39,6 +37,10 @@ export function createMainWindow(): void {
   ipc.answerRenderer('select-account', id => {
     selectAccount(id as string)
   })
+
+  mainWindow.on('resize', updateAccountViewBounds)
+
+  config.onDidChange(ConfigKey.Accounts, updateRendererAccounts)
 }
 
 export function getMainWindowContentSize(): number[] {

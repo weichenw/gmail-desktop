@@ -19,12 +19,15 @@ export function createAddAccountWindow(): void {
 
   addAccountWindow.loadURL(getRendererURL(Route.AddAccount))
 
-  addAccountWindow.on('close', () => {
-    addAccountWindow = null
+  const removeAddAccountListener = ipc.answerRenderer('add-account', label => {
+    addAccount(label as string)
+    if (addAccountWindow) {
+      addAccountWindow.close()
+    }
   })
 
-  ipc.answerRenderer('add-account', label => {
-    addAccount(label as string)
-    addAccountWindow!.close()
+  addAccountWindow.on('close', () => {
+    addAccountWindow = null
+    removeAddAccountListener()
   })
 }

@@ -18,16 +18,22 @@ export function createEditAccountWindow(accountId: string): void {
     }
   })
 
-  editAccountWindow.loadURL(
-    getRendererURL(Route.EditAccount, { account: getAccount(accountId) })
+  const account = getAccount(accountId)
+
+  editAccountWindow.loadURL(getRendererURL(Route.EditAccount, { account }))
+
+  const removeEditAccountListener = ipc.answerRenderer(
+    'edit-account',
+    account => {
+      editAccount(account as Account)
+      if (editAccountWindow) {
+        editAccountWindow.close()
+      }
+    }
   )
 
   editAccountWindow.on('close', () => {
     editAccountWindow = null
-  })
-
-  ipc.answerRenderer('edit-account', account => {
-    editAccount(account as Account)
-    editAccountWindow!.close()
+    removeEditAccountListener()
   })
 }

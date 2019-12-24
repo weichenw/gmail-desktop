@@ -1,7 +1,7 @@
 {
   "extends": "./tsconfig.json",
   "include": [
-    "src/main/index.ts"
+    "src/main"
   ],
   "compilerOptions": {
     "outDir": "dist-js",

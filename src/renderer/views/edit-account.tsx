@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState } from 'react'
 import { ipcRenderer as ipc } from 'electron-better-ipc'
 import Dialog from '@material-ui/core/Dialog'
 import DialogTitle from '@material-ui/core/DialogTitle'
@@ -6,16 +6,10 @@ import DialogContent from '@material-ui/core/DialogContent'
 import DialogActions from '@material-ui/core/DialogActions'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
-import { parse as parseQueryString } from 'query-string'
-import { Account } from '../../types'
+import { useParamsAccount } from '../params'
 
 const EditAccount: React.FC = () => {
-  const account = useMemo(
-    () =>
-      JSON.parse(parseQueryString(location.search)
-        .account as string) as Account,
-    []
-  )
+  const account = useParamsAccount()
 
   const [label, setLabel] = useState<string>(account.label)
 
