@@ -1,10 +1,14 @@
 import { BrowserWindow, BrowserView, app, ipcMain as ipc } from 'electron'
+import { is } from 'electron-util'
 import { selectAccount } from '../helpers/accounts'
 import { createAccountViews, updateAccountViewBounds } from '../account-views'
 import state, { setUnreadCount, getTotalUnreadCount } from '../state'
-import { getRendererURL, updateRendererAccounts, updateRendererUnreadCounts } from '../helpers/renderer'
+import {
+  getRendererURL,
+  updateRendererAccounts,
+  updateRendererUnreadCounts
+} from '../helpers/renderer'
 import config, { ConfigKey } from '../config'
-import { is } from 'electron-util'
 
 let mainWindow: BrowserWindow
 
@@ -70,17 +74,20 @@ export function createMainWindow(): void {
     selectAccount(id)
   })
 
-  ipc.on('update-unread-count', (_event, accountId: string, unreadCount: number) => {
-    setUnreadCount(accountId, unreadCount)
+  ipc.on(
+    'update-unread-count',
+    (_event, accountId: string, unreadCount: number) => {
+      setUnreadCount(accountId, unreadCount)
 
-    const totalUnreadCount = getTotalUnreadCount()
+      const totalUnreadCount = getTotalUnreadCount()
 
-    if (is.macos) {
-      app.dock.setBadge(totalUnreadCount ? totalUnreadCount.toString() : '')
+      if (is.macos) {
+        app.dock.setBadge(totalUnreadCount ? totalUnreadCount.toString() : '')
+      }
+
+      updateRendererUnreadCounts()
     }
-
-    updateRendererUnreadCounts()
-  })
+  )
 }
 
 export function getMainWindowContentSize(): number[] {

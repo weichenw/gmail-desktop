@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react'
 import { ipcRenderer as ipc } from 'electron'
+import React, { useState, useEffect, useRef } from 'react'
 import AppBar from '@material-ui/core/AppBar'
 import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
@@ -34,10 +34,7 @@ const Main: React.FC = () => {
       <Tabs
         variant="fullWidth"
         value={accounts.findIndex(account => account.selected)}
-        onChange={(
-          _event,
-          selectedIndex: number
-        ) => {
+        onChange={(_event, selectedIndex: number) => {
           const { id, selected } = accounts[selectedIndex]
           if (!selected) {
             ipc.send('select-account', id)
@@ -45,14 +42,21 @@ const Main: React.FC = () => {
         }}
       >
         {accounts.map(({ id, label }) => (
-          <Tab key={id} label={(
-            <div style={{ display: 'flex' }}>
-              <span style={{ marginRight: 4 }}>{label}</span>
-              {Boolean(unreadCounts[id]) && (
-                <Chip label={unreadCounts[id]} size="small" color="secondary" />
-              )}
-            </div>
-          )} />
+          <Tab
+            key={id}
+            label={
+              <div style={{ display: 'flex' }}>
+                <span style={{ marginRight: 4 }}>{label}</span>
+                {Boolean(unreadCounts[id]) && (
+                  <Chip
+                    label={unreadCounts[id]}
+                    size="small"
+                    color="secondary"
+                  />
+                )}
+              </div>
+            }
+          />
         ))}
       </Tabs>
     </AppBar>

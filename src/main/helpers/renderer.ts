@@ -37,7 +37,10 @@ export function getRendererURL(
 }
 
 export function updateRendererAccounts(): void {
-  getMainWindow().webContents.send('update-accounts', config.get(ConfigKey.Accounts))
+  getMainWindow().webContents.send(
+    'update-accounts',
+    config.get(ConfigKey.Accounts)
+  )
 }
 
 export function updateRendererUnreadCounts(): void {

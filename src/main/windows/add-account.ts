@@ -23,6 +23,6 @@ export function createAddAccountWindow(): void {
   })
 
   ipc.once('add-account', (_event, label: string) => {
-    addAccount(label as string)
+    addAccount(label)
   })
 }

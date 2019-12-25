@@ -55,7 +55,6 @@ app.on('before-quit', () => {
     })
   }
 })
-
 ;(async () => {
   await Promise.all([ensureOnline(), app.whenReady()])
 

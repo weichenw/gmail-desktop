@@ -110,7 +110,10 @@ export function createAccountView(
       }
 
       if (url.startsWith('about:blank')) {
-        let win: BrowserWindow | null = new BrowserWindow({ ...options, show: false })
+        let win: BrowserWindow | null = new BrowserWindow({
+          ...options,
+          show: false
+        })
 
         win.webContents.once('will-redirect', (_event, url) => {
           shell.openExternal(url)

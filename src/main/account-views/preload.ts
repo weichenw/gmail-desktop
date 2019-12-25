@@ -11,7 +11,7 @@ function getUnreadCount(): number {
   )
 
   const unreadCount = inboxUnreadCountElement
-    ? Number(inboxUnreadCountElement.innerText)
+    ? Number(inboxUnreadCountElement.textContent)
     : 0
 
   return unreadCount
