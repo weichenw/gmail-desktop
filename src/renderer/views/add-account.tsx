@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { ipcRenderer as ipc } from 'electron-better-ipc'
+import { ipcRenderer as ipc } from 'electron'
 import Dialog from '@material-ui/core/Dialog'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import DialogContent from '@material-ui/core/DialogContent'
@@ -27,7 +27,7 @@ const AddAccount: React.FC = () => {
         <Button onClick={window.close}>Cancel</Button>
         <Button
           onClick={() => {
-            ipc.callMain('add-account', label)
+            ipc.send('add-account', label)
             window.close()
           }}
         >

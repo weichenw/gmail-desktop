@@ -1,6 +1,7 @@
-import { BrowserWindow, app } from 'electron'
+import { BrowserWindow, app, ipcMain as ipc } from 'electron'
 import { Route } from '../../constants'
 import { getRendererURL } from '../helpers/renderer'
+import { addAccount } from '../helpers/accounts'
 
 let addAccountWindow: BrowserWindow | null
 
@@ -19,5 +20,9 @@ export function createAddAccountWindow(): void {
 
   addAccountWindow.on('close', () => {
     addAccountWindow = null
+  })
+
+  ipc.once('add-account', (_event, label: string) => {
+    addAccount(label as string)
   })
 }

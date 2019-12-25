@@ -1,4 +1,4 @@
-import { ipcRenderer as ipc } from 'electron-better-ipc'
+import { ipcRenderer as ipc } from 'electron'
 
 const UPDATE_UNREAD_COUNT_INVERVAL = 1000
 
@@ -22,11 +22,11 @@ function updateUnreadCount(): void {
 
   if (unreadCount !== lastUnreadCount) {
     lastUnreadCount = unreadCount
-    ipc.callMain('update-unread-count', { accountId, unreadCount })
+    ipc.send('update-unread-count', accountId, unreadCount)
   }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('load', () => {
   accountId = localStorage.getItem('_accountId')!
   setInterval(updateUnreadCount, UPDATE_UNREAD_COUNT_INVERVAL)
 })

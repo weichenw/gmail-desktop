@@ -1,20 +1,33 @@
-import { BrowserWindow, BrowserView, app } from 'electron'
-import { ipcMain as ipc } from 'electron-better-ipc'
+import { BrowserWindow, BrowserView, app, ipcMain as ipc } from 'electron'
 import { selectAccount } from '../helpers/accounts'
 import { createAccountViews, updateAccountViewBounds } from '../account-views'
-import state from '../state'
-import { getRendererURL, updateRendererAccounts } from '../helpers/renderer'
+import state, { setUnreadCount, getTotalUnreadCount } from '../state'
+import { getRendererURL, updateRendererAccounts, updateRendererUnreadCounts } from '../helpers/renderer'
+import config, { ConfigKey } from '../config'
+import { is } from 'electron-util'
 
 let mainWindow: BrowserWindow
-let rendererReady = false
 
-export function getMainWindow(): BrowserWindow {
+export function getMainWindow(): typeof mainWindow {
   return mainWindow
 }
 
 export function createMainWindow(): void {
+  const lastWindowState = config.get(ConfigKey.LastWindowState)
+
+  const shouldStartMinimized =
+    app.commandLine.hasSwitch('launch-minimized') ||
+    config.get(ConfigKey.LaunchMinimized)
+
   mainWindow = new BrowserWindow({
     title: app.name,
+    titleBarStyle: config.get(ConfigKey.CompactHeader)
+      ? 'hiddenInset'
+      : 'default',
+    width: lastWindowState.bounds.width,
+    height: lastWindowState.bounds.height,
+    x: lastWindowState.bounds.x,
+    y: lastWindowState.bounds.y,
     show: false,
     webPreferences: {
       nodeIntegration: true
@@ -23,21 +36,51 @@ export function createMainWindow(): void {
 
   mainWindow.loadURL(getRendererURL())
 
-  ipc.answerRenderer('ready', appBarHeight => {
-    if (!rendererReady) {
-      rendererReady = true
-      state.appBarHeight = appBarHeight as number
-      updateRendererAccounts()
-      createAccountViews()
-      mainWindow.show()
+  mainWindow.on('close', event => {
+    if (!state.isQuitting && mainWindow) {
+      event.preventDefault()
+      mainWindow.blur()
+      mainWindow.hide()
     }
   })
 
-  ipc.answerRenderer('select-account', id => {
-    selectAccount(id as string)
+  mainWindow.on('resize', updateAccountViewBounds)
+
+  ipc.once('ready', (_event, appBarHeight: number) => {
+    state.appBarHeight = appBarHeight
+
+    createAccountViews()
+
+    updateRendererAccounts()
+
+    if (!shouldStartMinimized) {
+      mainWindow.show()
+    }
+
+    if (lastWindowState.fullscreen && !mainWindow.isFullScreen()) {
+      mainWindow.setFullScreen(lastWindowState.fullscreen)
+    }
+
+    if (lastWindowState.maximized && !mainWindow.isMaximized()) {
+      mainWindow.maximize()
+    }
   })
 
-  mainWindow.on('resize', updateAccountViewBounds)
+  ipc.on('select-account', (_event, id: string) => {
+    selectAccount(id)
+  })
+
+  ipc.on('update-unread-count', (_event, accountId: string, unreadCount: number) => {
+    setUnreadCount(accountId, unreadCount)
+
+    const totalUnreadCount = getTotalUnreadCount()
+
+    if (is.macos) {
+      app.dock.setBadge(totalUnreadCount ? totalUnreadCount.toString() : '')
+    }
+
+    updateRendererUnreadCounts()
+  })
 }
 
 export function getMainWindowContentSize(): number[] {

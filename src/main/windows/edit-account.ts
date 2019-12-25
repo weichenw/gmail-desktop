@@ -1,7 +1,8 @@
-import { BrowserWindow, app } from 'electron'
+import { BrowserWindow, app, ipcMain as ipc } from 'electron'
 import { Route } from '../../constants'
 import { getRendererURL } from '../helpers/renderer'
-import { getAccount } from '../helpers/accounts'
+import { getAccount, editAccount } from '../helpers/accounts'
+import { Account } from '../../types'
 
 let editAccountWindow: BrowserWindow | null
 
@@ -22,5 +23,9 @@ export function createEditAccountWindow(accountId: string): void {
 
   editAccountWindow.on('close', () => {
     editAccountWindow = null
+  })
+
+  ipc.once('edit-account', (_event, account: Account) => {
+    editAccount(account)
   })
 }

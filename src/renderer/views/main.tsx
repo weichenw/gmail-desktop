@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { ipcRenderer as ipc } from 'electron-better-ipc'
+import { ipcRenderer as ipc } from 'electron'
 import AppBar from '@material-ui/core/AppBar'
 import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
@@ -13,14 +13,14 @@ const Main: React.FC = () => {
   const appBarElement = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    ipc.callMain('ready', appBarElement.current!.clientHeight)
+    ipc.send('ready', appBarElement.current!.clientHeight)
 
-    ipc.answerMain('update-accounts', _accounts => {
-      setAccounts(_accounts as Accounts)
+    ipc.on('update-accounts', (_event, accounts: Accounts) => {
+      setAccounts(accounts)
     })
 
-    ipc.answerMain('update-unread-counts', _unreadCounts => {
-      setUnreadCounts(_unreadCounts as UnreadCounts)
+    ipc.on('update-unread-counts', (_event, unreadCounts: UnreadCounts) => {
+      setUnreadCounts(unreadCounts)
     })
   }, [])
 
@@ -35,27 +35,25 @@ const Main: React.FC = () => {
         variant="fullWidth"
         value={accounts.findIndex(account => account.selected)}
         onChange={(
-          _event: React.ChangeEvent<Record<string, unknown>>,
-          value: any
+          _event,
+          selectedIndex: number
         ) => {
-          const { id, selected } = accounts[value as number]
+          const { id, selected } = accounts[selectedIndex]
           if (!selected) {
-            ipc.callMain('select-account', id)
+            ipc.send('select-account', id)
           }
         }}
       >
-        {accounts.map(({ id, label }) => {
-          const content = (
+        {accounts.map(({ id, label }) => (
+          <Tab key={id} label={(
             <div style={{ display: 'flex' }}>
               <span style={{ marginRight: 4 }}>{label}</span>
               {Boolean(unreadCounts[id]) && (
                 <Chip label={unreadCounts[id]} size="small" color="secondary" />
               )}
             </div>
-          )
-
-          return <Tab key={id} label={content} />
-        })}
+          )} />
+        ))}
       </Tabs>
     </AppBar>
   )

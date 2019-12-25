@@ -1,111 +1,19 @@
-import * as fs from 'fs'
-import * as path from 'path'
-import {
-  app,
-  ipcMain as ipc,
-  shell,
-  BrowserWindow,
-  Menu,
-  Tray,
-  MenuItemConstructorOptions
-} from 'electron'
-import { is } from 'electron-util'
-
-import { init as initAutoUpdates } from './updates'
-import config, { ConfigKey } from './config'
-import {
-  init as initCustomStyles,
-  USER_CUSTOM_STYLE_PATH
-} from './custom-styles'
-import { init as initDebug } from './debug'
-import { init as initDownloads } from './downloads'
-import { platform, getUrlAccountId, createTrayIcon } from './helpers'
-import menu from './menu'
-import { setAppMenuBarVisibility, cleanURLFromGoogle } from './utils'
-import ensureOnline from './ensure-online'
-
-import electronContextMenu = require('electron-context-menu')
-
-initDebug()
-initDownloads()
-initAutoUpdates()
-
-electronContextMenu({ showCopyImageAddress: true, showSaveImageAs: true })
-
-const shouldStartMinimized =
-  app.commandLine.hasSwitch('launch-minimized') ||
-  config.get(ConfigKey.LaunchMinimized)
-
 const trayIcon = createTrayIcon(false)
 const trayIconUnread = createTrayIcon(true)
 
-app.setAppUserModelId('io.cheung.gmail-desktop')
-
-let mainWindow: BrowserWindow
 let replyToWindow: BrowserWindow
-let isQuitting = false
+
 let tray: Tray | undefined
 let trayContextMenu: Menu
 
-if (!app.requestSingleInstanceLock()) {
-  app.quit()
-}
-
-app.on('second-instance', () => {
-  if (mainWindow) {
-    if (mainWindow.isMinimized()) {
-      mainWindow.restore()
-    }
-
-    mainWindow.show()
-  }
-})
-
 function createWindow(): void {
-  const lastWindowState = config.get(ConfigKey.LastWindowState)
-
-  mainWindow = new BrowserWindow({
-    title: app.name,
-    titleBarStyle: config.get(ConfigKey.CompactHeader)
-      ? 'hiddenInset'
-      : 'default',
-    width: lastWindowState.bounds.width,
-    height: lastWindowState.bounds.height,
-    x: lastWindowState.bounds.x,
-    y: lastWindowState.bounds.y,
-    webPreferences: {
-      nodeIntegration: false,
-      nativeWindowOpen: true,
-      preload: path.join(__dirname, 'preload')
-    },
-    show: !shouldStartMinimized
-  })
-
-  if (lastWindowState.fullscreen && !mainWindow.isFullScreen()) {
-    mainWindow.setFullScreen(lastWindowState.fullscreen)
-  }
-
-  if (lastWindowState.maximized && !mainWindow.isMaximized()) {
-    mainWindow.maximize()
-  }
-
   if (is.linux || is.windows) {
     setAppMenuBarVisibility()
   }
 
-  mainWindow.loadURL('https://mail.google.com')
-
   mainWindow.webContents.on('dom-ready', () => {
     addCustomCSS(mainWindow)
     initCustomStyles()
-  })
-
-  mainWindow.on('close', e => {
-    if (!isQuitting) {
-      e.preventDefault()
-      mainWindow.blur()
-      mainWindow.hide()
-    }
   })
 
   mainWindow.on('hide', () => toggleAppVisiblityTrayItem(false))

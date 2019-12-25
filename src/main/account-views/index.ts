@@ -7,6 +7,7 @@ import {
 } from '../windows/main'
 
 import path = require('path')
+import { Google } from '../../constants'
 
 const accountViews: Record<string, number> = {}
 
@@ -34,7 +35,7 @@ export function getAccountViewBounds(): {
   return {
     visible: {
       x: 0,
-      y: 0,
+      y: state.appBarHeight,
       width: contentWidth,
       height
     },
@@ -75,7 +76,7 @@ export function createAccountView(
     `localStorage.setItem('_accountId', '${accountId}')`
   )
 
-  webContents.loadURL('https://mail.google.com/')
+  webContents.loadURL(Google.Mail)
 
   accountViews[accountId] = accountView.id
 
@@ -85,11 +86,11 @@ export function createAccountView(
       event.preventDefault()
 
       // Block `Add Account`
-      if (url.startsWith('https://accounts.google.com')) {
+      if (url.startsWith(Google.Accounts)) {
         return
       }
 
-      if (url.startsWith('https://mail.google.com')) {
+      if (url.startsWith(Google.Mail)) {
         const win = new BrowserWindow({
           ...options,
           titleBarStyle: 'default',
@@ -109,11 +110,12 @@ export function createAccountView(
       }
 
       if (url.startsWith('about:blank')) {
-        const win = new BrowserWindow({ ...options, show: false })
+        let win: BrowserWindow | null = new BrowserWindow({ ...options, show: false })
 
         win.webContents.once('will-redirect', (_event, url) => {
           shell.openExternal(url)
-          win.destroy()
+          win!.destroy()
+          win = null
         })
 
         // @ts-ignore

@@ -2,17 +2,20 @@ import { UnreadCounts } from '../types'
 
 export enum StateKey {
   AppBarHeight = 'appBarHeight',
-  UnreadCounts = 'unreadCounts'
+  UnreadCounts = 'unreadCounts',
+  IsQuitting = 'isQuitting'
 }
 
 interface State {
   [StateKey.AppBarHeight]: number
   [StateKey.UnreadCounts]: UnreadCounts
+  [StateKey.IsQuitting]: boolean
 }
 
 const state: State = {
   [StateKey.AppBarHeight]: 0,
-  [StateKey.UnreadCounts]: {}
+  [StateKey.UnreadCounts]: {},
+  [StateKey.IsQuitting]: false
 }
 
 export function setUnreadCount(accountId: string, count: number): void {

@@ -1,5 +1,4 @@
 import { is } from 'electron-util'
-import { ipcMain as ipc } from 'electron-better-ipc'
 import { Route } from '../../constants'
 import { getMainWindow } from '../windows/main'
 import config, { ConfigKey } from '../config'
@@ -38,13 +37,9 @@ export function getRendererURL(
 }
 
 export function updateRendererAccounts(): void {
-  ipc.callRenderer(
-    getMainWindow(),
-    'update-accounts',
-    config.get(ConfigKey.Accounts)
-  )
+  getMainWindow().webContents.send('update-accounts', config.get(ConfigKey.Accounts))
 }
 
 export function updateRendererUnreadCounts(): void {
-  ipc.callRenderer(getMainWindow(), 'update-unread-counts', state.unreadCounts)
+  getMainWindow().webContents.send('update-unread-counts', state.unreadCounts)
 }
