@@ -11,6 +11,7 @@ import {
 import config, { ConfigKey } from '../config'
 
 let mainWindow: BrowserWindow
+let rendererReadyOnce = false
 
 export function getMainWindow(): typeof mainWindow {
   return mainWindow
@@ -50,23 +51,27 @@ export function createMainWindow(): void {
 
   mainWindow.on('resize', updateAccountViewBounds)
 
-  ipc.once('ready', (_event, appBarHeight: number) => {
+  ipc.on('ready', (_event, appBarHeight: number) => {
     state.appBarHeight = appBarHeight
-
-    createAccountViews()
 
     updateRendererAccounts()
 
-    if (!shouldStartMinimized) {
-      mainWindow.show()
-    }
+    if (!rendererReadyOnce) {
+      rendererReadyOnce = true
 
-    if (lastWindowState.fullscreen && !mainWindow.isFullScreen()) {
-      mainWindow.setFullScreen(lastWindowState.fullscreen)
-    }
+      createAccountViews()
 
-    if (lastWindowState.maximized && !mainWindow.isMaximized()) {
-      mainWindow.maximize()
+      if (!shouldStartMinimized) {
+        mainWindow.show()
+      }
+
+      if (lastWindowState.fullscreen && !mainWindow.isFullScreen()) {
+        mainWindow.setFullScreen(lastWindowState.fullscreen)
+      }
+
+      if (lastWindowState.maximized && !mainWindow.isMaximized()) {
+        mainWindow.maximize()
+      }
     }
   })
 

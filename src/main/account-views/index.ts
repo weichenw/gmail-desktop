@@ -8,8 +8,10 @@ import {
 
 import path = require('path')
 import { Google } from '../../constants'
+import { insertCSS } from '../helpers/appearance'
 
 const accountViews: Record<string, number> = {}
+let accountsViewsCreated = false
 
 export function getAccountView(accountId: string): BrowserView {
   return BrowserView.fromId(accountViews[accountId])
@@ -62,6 +64,8 @@ export function createAccountView(
   })
 
   addMainWindowBrowserView(accountView)
+
+  insertCSS(accountView)
 
   if (typeof show === 'boolean') {
     const { visible, hidden } = getAccountViewBounds()
@@ -133,29 +137,29 @@ export function createAccountView(
 }
 
 export function createAccountViews(): void {
-  const accounts = config.get(ConfigKey.Accounts)
-  const { visible, hidden } = getAccountViewBounds()
+  if (!accountsViewsCreated) {
+    accountsViewsCreated = true
 
-  accounts.forEach(({ id, selected }) => {
-    createAccountView(id, selected ? visible : hidden)
-  })
+    const accounts = config.get(ConfigKey.Accounts)
+    const { visible, hidden } = getAccountViewBounds()
+
+    accounts.forEach(({ id, selected }) => {
+      createAccountView(id, selected ? visible : hidden)
+    })
+  }
 }
 
 export function updateAccountViewBounds(): void {
   const accounts = config.get(ConfigKey.Accounts)
   const { visible, hidden } = getAccountViewBounds()
 
-  Object.entries(getAccountViews()).forEach(([accountId, accountView]) => {
-    accountView.setBounds(
-      accounts.find(account => account.id === accountId)!.selected
-        ? visible
-        : hidden
-    )
+  accounts.forEach(({ id, selected }) => {
+    const accountView = getAccountView(id)
+    accountView.setBounds(selected ? visible : hidden)
   })
 }
 
 export function destroyAccountView(accountId: string): void {
-  getAccountView(accountId).destroy()
-  delete accountViews[accountId] // eslint-disable-line @typescript-eslint/no-dynamic-delete
   updateAccountViewBounds()
+  getAccountView(accountId).destroy()
 }

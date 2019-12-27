@@ -25,12 +25,7 @@ const Main: React.FC = () => {
   }, [])
 
   return (
-    <AppBar
-      ref={appBarElement}
-      position="fixed"
-      color="default"
-      style={{ top: 'auto', bottom: 0 }}
-    >
+    <AppBar ref={appBarElement} color="default">
       <Tabs
         variant="fullWidth"
         value={accounts.findIndex(account => account.selected)}
@@ -44,6 +39,8 @@ const Main: React.FC = () => {
         {accounts.map(({ id, label }) => (
           <Tab
             key={id}
+            // @ts-ignore
+            style={{ WebkitAppRegion: 'drag' }}
             label={
               <div style={{ display: 'flex' }}>
                 <span style={{ marginRight: 4 }}>{label}</span>
