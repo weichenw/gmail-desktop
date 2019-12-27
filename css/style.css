@@ -1,4 +1,43 @@
 /**
+ * DRAGGABLE HEADERS
+ * ----------------------------------------
+ */
+
+.compactHeader header,
+/* Compose in new window */
+.compactHeader .Io,
+/* Message toolbar in new window */
+.compactHeader.xE .G-atb,
+/* PDF viewer header */
+.compactHeader div[aria-label='Showing viewer.'] > div:nth-child(3) > div {
+  -webkit-app-region: drag;
+}
+
+/**
+ * NON-DRAGGABLE ELEMENTS
+ * ----------------------------------------
+ */
+
+/* Hamburger menu */
+.compactHeader header > div:nth-child(2) > div:first-child > div:first-child,
+/* Search box */
+.compactHeader header > div:nth-child(2) > div:nth-child(2) form,
+/* Support question mark */
+.compactHeader header > div:nth-child(2) > div:nth-child(2) > div:nth-child(3) a,
+/* User avatar */
+.compactHeader header > div:nth-child(2) > div:nth-child(3) a,
+/* User avatar for G Suite accounts */
+.compactHeader header > div:nth-child(2) > div:nth-child(3) > div > div:last-child[role='button'],
+/* Minimize button in new compose window header */
+.compactHeader .Io > div:first-child,
+/* Message toolbar button strip in new window */
+.compactHeader.xE .G-atb .G-tF,
+/* PDF viewer header elements (buttons, text, etc.) */
+.compactHeader div[aria-label='Showing viewer.'] > div:nth-child(3) > div > div {
+  -webkit-app-region: no-drag;
+}
+
+/**
  * SIMPLIFIED HEADER STYLES
  * ----------------------------------------
  */

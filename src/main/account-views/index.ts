@@ -37,13 +37,13 @@ export function getAccountViewBounds(): {
   return {
     visible: {
       x: 0,
-      y: state.appBarHeight,
+      y: 0,
       width: contentWidth,
       height
     },
     hidden: {
       x: 0,
-      y: contentHeight,
+      y: 0,
       width: contentWidth,
       height
     }
@@ -75,7 +75,7 @@ export function createAccountView(
   }
 
   const { webContents } = accountView
-
+  webContents.openDevTools()
   webContents.executeJavaScript(
     `localStorage.setItem('_accountId', '${accountId}')`
   )

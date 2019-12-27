@@ -18,8 +18,6 @@ setupContextMenu()
 
 app.setAppUserModelId('dev.timche.gmail-desktop')
 
-app.disableHardwareAcceleration()
-
 if (!app.requestSingleInstanceLock()) {
   app.quit()
 }
